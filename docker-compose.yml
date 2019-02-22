@@ -1,0 +1,18 @@
+version: "2"
+services:
+  the-darksider:
+    container_name: the-darksider
+    build: .
+    restart: always
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "3000:3000"
+    stdin_open: true
+  the-darksider-mongo:
+    container_name: the-darksider-mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
