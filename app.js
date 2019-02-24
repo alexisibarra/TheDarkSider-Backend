@@ -7,4 +7,4 @@ require('./config/passport');
 app.use(require('./routes'));
 app.use(require('./middlewares/errorHandler'));
 
-app.listen(5000, () => console.log(`Server running on http://localhost:5000/`));
+app.listen(7001, () => console.log(`Server running on http://localhost:7001/`));
