@@ -23,7 +23,14 @@ router.post('/', auth.optional, (req, res, next) => {
     finalUser.setPassword(user.password);
 
     return finalUser.save()
-      .then(() => res.json({ user: finalUser.toAuthJSON() }));
+      .then(() => res.json({ user: finalUser.toAuthJSON() }))
+      .catch(err => {
+        if (/duplicate/i.test(err.errmsg)) {
+          next({ message: 'Email is already registered' })
+        }
+
+        next({ message: 'Operation could not be completed, please try again' })
+      });
   }
 
   next({ message: "User information must be provided" })
@@ -34,11 +41,19 @@ router.post('/login', auth.optional, (req, res, next) => {
   const { body: { user } } = req;
 
   if (!user.email) {
-    next({ status: 422, message: { email: 'is required' } })
+    return res.status(422).json({
+      errors: {
+        email: 'is required',
+      },
+    });
   }
 
   if (!user.password) {
-    next({ status: 422, message: { password: 'is required' } })
+    return res.status(422).json({
+      errors: {
+        password: 'is required',
+      },
+    });
   }
 
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
@@ -47,13 +62,15 @@ router.post('/login', auth.optional, (req, res, next) => {
     }
 
     if (passportUser) {
-      const user = passportUser;
-      user.token = passportUser.generateJWT();
+      const usera = passportUser;
+      usera.token = passportUser.generateJWT();
 
-      return res.json({ user: user.toAuthJSON() });
+      return res.json({ user: usera.toAuthJSON() });
     }
 
-    return status(400).info;
+    return res.status(422).json({
+      errors: info,
+    });
   })(req, res, next);
 });
 
