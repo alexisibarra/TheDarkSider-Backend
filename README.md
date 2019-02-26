@@ -28,7 +28,7 @@ To use docker compose you need to have [Docker](https://docs.docker.com/install/
 
 ```
 docker-compose up -d
-docker exec -it fanfluencer-app yarn
+docker exec -it the-darksider yarn
 ```
 
 ### 2) Manual Instalation
